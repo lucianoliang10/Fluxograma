@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ANRESF – Requisito de Solvência</title>
+  <style>
+    :root {
+      /* EDITAR CORES AQUI */
+      --bg-main: #0f0e1a;
+      --blue-institutional: #29284c;
+      --gold: #b89a73;
+      --gold-light: #d4b896;
+      --card-1: #1e1d30;
+      --card-2: #13122a;
+      --text-light: #e8e0d5;
+      --alert: #9f3f3f;
+      --ok: #4d8b61;
+      --decision: #2c2b48;
+      --line: #b89a73;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, #17162b 0%, var(--bg-main) 55%);
+      color: var(--text-light);
+    }
+
+    .page {
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--card-1), var(--card-2));
+      border: 1px solid rgba(212, 184, 150, 0.35);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 16px;
+      align-items: center;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .logo {
+      width: 68px;
+      height: 68px;
+      border: 1px dashed rgba(212, 184, 150, 0.5);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: var(--gold-light);
+      font-size: 12px;
+      text-align: center;
+      padding: 6px;
+    }
+
+    .title-group h1 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2vw, 1.8rem);
+      color: var(--gold-light);
+      letter-spacing: 0.02em;
+    }
+
+    .title-group p {
+      margin: 4px 0 0;
+      font-size: 0.96rem;
+      color: #d9cec0;
+    }
+
+    .meta {
+      text-align: right;
+      font-size: 0.86rem;
+      line-height: 1.45;
+      color: #d8c9b5;
+      min-width: 220px;
+    }
+
+    h2 {
+      margin: 4px 2px 0;
+      font-size: 1.35rem;
+      color: var(--gold-light);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px 12px;
+      background: rgba(30, 29, 48, 0.7);
+      border: 1px solid rgba(184, 154, 115, 0.35);
+      border-radius: 10px;
+    }
+
+    .tag {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .etapa { background: #2b2a45; border-color: #4f4b82; }
+    .decisao { background: #2f2e50; border-color: #7d6da5; }
+    .alerta { background: #3b2127; border-color: #9f3f3f; }
+    .resultado { background: #243d2f; border-color: #4d8b61; }
+    .encaminhamento { background: #423626; border-color: #b89a73; }
+
+    .flow-wrap {
+      background: linear-gradient(180deg, rgba(41, 40, 76, 0.3), rgba(19, 18, 42, 0.4));
+      border: 1px solid rgba(184, 154, 115, 0.3);
+      border-radius: 14px;
+      padding: 14px;
+      overflow: auto;
+    }
+
+    svg { min-width: 1460px; width: 100%; height: auto; display: block; }
+
+    .node { fill: var(--card-1); stroke: #6f6aa0; stroke-width: 2; }
+    .node-text { fill: var(--text-light); font-size: 16px; font-weight: 600; }
+    .small { font-size: 14px; font-weight: 500; }
+    .decision-shape { fill: var(--decision); stroke: #9c84bf; stroke-width: 2.4; }
+    .alert-node { fill: #3a1f26; stroke: var(--alert); stroke-width: 2.2; }
+    .result-node { fill: #1f3b2d; stroke: var(--ok); stroke-width: 2.2; }
+    .forward-node { fill: #3f3326; stroke: var(--gold); stroke-width: 2.2; }
+    .line { stroke: var(--line); stroke-width: 2.3; fill: none; }
+    .label { fill: var(--gold-light); font-size: 14px; font-weight: 700; }
+
+    @media (max-width: 980px) {
+      .header { grid-template-columns: 1fr; }
+      .meta { text-align: left; min-width: auto; }
+      .logo { width: 58px; height: 58px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div class="logo">Logo<br>ANRESF</div>
+      <!-- EDITAR TÍTULO E SUBTÍTULO AQUI -->
+      <div class="title-group">
+        <h1>ANRESF – Requisito de Solvência</h1>
+        <p>Fluxograma de verificação e encaminhamento</p>
+      </div>
+      <div class="meta">
+        <div><strong>Versão:</strong> 1.0</div>
+        <div><strong>Setor:</strong> Unidade Técnica</div>
+        <div><strong>Fluxo:</strong> Requisito de Solvência</div>
+      </div>
+    </header>
+
+    <h2>Fluxograma</h2>
+
+    <!-- EDITAR LEGENDA AQUI -->
+    <section class="legend" aria-label="Legenda do fluxograma">
+      <span class="tag etapa">Etapa</span>
+      <span class="tag decisao">Decisão</span>
+      <span class="tag alerta">Alerta / Inconformidade</span>
+      <span class="tag resultado">Resultado positivo</span>
+      <span class="tag encaminhamento">Encaminhamento</span>
+    </section>
+
+    <section class="flow-wrap" aria-label="Fluxograma de verificação do requisito de solvência">
+      <!-- EDITAR TEXTOS DAS ETAPAS AQUI DENTRO DO SVG -->
+      <svg viewBox="0 0 1460 1160" role="img" aria-labelledby="flow-title">
+        <title id="flow-title">Fluxograma de verificação do requisito de solvência</title>
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#b89a73"></path>
+          </marker>
+        </defs>
+
+        <!-- nós principais -->
+        <rect class="node" x="540" y="20" width="380" height="64" rx="12" />
+        <text class="node-text" x="730" y="58" text-anchor="middle">Abertura da verificação do Requisito de Solvência</text>
+
+        <rect class="node" x="560" y="130" width="340" height="64" rx="12" />
+        <text class="node-text" x="730" y="168" text-anchor="middle">Definir data de comprovação e data de corte</text>
+
+        <polygon class="decision-shape" points="730,240 870,330 730,420 590,330" />
+        <text class="node-text" x="730" y="322" text-anchor="middle">Clube apresentou</text>
+        <text class="node-text small" x="730" y="346" text-anchor="middle">declaração/documentação no prazo?</text>
+
+        <rect class="node" x="560" y="470" width="340" height="64" rx="12" />
+        <text class="node-text" x="730" y="508" text-anchor="middle">Triagem formal da documentação</text>
+
+        <polygon class="decision-shape" points="730,570 870,660 730,750 590,660" />
+        <text class="node-text" x="730" y="652" text-anchor="middle">Documentação completa</text>
+        <text class="node-text small" x="730" y="676" text-anchor="middle">e regular?</text>
+
+        <rect class="node" x="560" y="800" width="340" height="64" rx="12" />
+        <text class="node-text" x="730" y="838" text-anchor="middle">Análise material da solvência</text>
+
+        <polygon class="decision-shape" points="730,900 870,990 730,1080 590,990" />
+        <text class="node-text" x="730" y="982" text-anchor="middle">Há pagamento em atraso?</text>
+
+        <!-- ramo NÃO da primeira decisão -->
+        <rect class="alert-node" x="70" y="248" width="360" height="84" rx="12" />
+        <text class="node-text" x="250" y="282" text-anchor="middle">Registrar intempestividade / omissão /</text>
+        <text class="node-text small" x="250" y="306" text-anchor="middle">incompletude</text>
+
+        <rect class="alert-node" x="70" y="362" width="360" height="64" rx="12" />
+        <text class="node-text" x="250" y="400" text-anchor="middle">Avaliar PSS</text>
+
+        <rect class="alert-node" x="70" y="458" width="360" height="84" rx="12" />
+        <text class="node-text" x="250" y="492" text-anchor="middle">Analisar materialmente documentos</text>
+        <text class="node-text small" x="250" y="516" text-anchor="middle">eventualmente recebidos</text>
+
+        <!-- decisão documentação NÃO -->
+        <rect class="alert-node" x="980" y="628" width="340" height="64" rx="12" />
+        <text class="node-text" x="1150" y="666" text-anchor="middle">Solicitar complementação</text>
+
+        <!-- ramo pagamento NÃO -->
+        <rect class="result-node" x="70" y="950" width="340" height="64" rx="12" />
+        <text class="node-text" x="240" y="988" text-anchor="middle">Resultado: Conformidade Plena</text>
+
+        <rect class="forward-node" x="70" y="1042" width="340" height="64" rx="12" />
+        <text class="node-text" x="240" y="1080" text-anchor="middle">Encaminhamento: Arquivamento</text>
+
+        <!-- ramo pagamento SIM -->
+        <polygon class="decision-shape" points="1150,900 1290,990 1150,1080 1010,990" />
+        <text class="node-text" x="1150" y="982" text-anchor="middle">Dívida é anterior</text>
+        <text class="node-text small" x="1150" y="1006" text-anchor="middle">a 01/01/2026?</text>
+
+        <rect class="result-node" x="980" y="160" width="420" height="64" rx="12" />
+        <text class="node-text" x="1190" y="198" text-anchor="middle">Resultado: Conformidade Transitória</text>
+
+        <rect class="forward-node" x="980" y="248" width="420" height="64" rx="12" />
+        <text class="node-text" x="1190" y="286" text-anchor="middle">Encaminhamento: Monitoramento reforçado</text>
+
+        <polygon class="decision-shape" points="1150,120 1290,210 1150,300 1010,210" />
+        <text class="node-text" x="1150" y="202" text-anchor="middle">Dívida é de 2026</text>
+        <text class="node-text small" x="1150" y="226" text-anchor="middle">em diante?</text>
+
+        <rect class="alert-node" x="980" y="352" width="420" height="64" rx="12" />
+        <text class="node-text" x="1190" y="390" text-anchor="middle">Resultado: Inconformidade por Dívida Nova</text>
+
+        <rect class="forward-node" x="980" y="440" width="420" height="64" rx="12" />
+        <text class="node-text" x="1190" y="478" text-anchor="middle">Encaminhamento: PSO</text>
+
+        <!-- conectores -->
+        <path class="line" marker-end="url(#arrow)" d="M730 84 L730 130"/>
+        <path class="line" marker-end="url(#arrow)" d="M730 194 L730 240"/>
+        <path class="line" marker-end="url(#arrow)" d="M730 420 L730 470"/>
+        <path class="line" marker-end="url(#arrow)" d="M730 534 L730 570"/>
+        <path class="line" marker-end="url(#arrow)" d="M730 750 L730 800"/>
+        <path class="line" marker-end="url(#arrow)" d="M730 864 L730 900"/>
+
+        <path class="line" marker-end="url(#arrow)" d="M590 330 L430 330 L430 290"/>
+        <text class="label" x="500" y="316">NÃO</text>
+        <path class="line" marker-end="url(#arrow)" d="M250 332 L250 362"/>
+        <path class="line" marker-end="url(#arrow)" d="M250 426 L250 458"/>
+
+        <path class="line" marker-end="url(#arrow)" d="M870 330 L980 330 L980 502 L900 502"/>
+        <text class="label" x="898" y="316">SIM</text>
+
+        <path class="line" marker-end="url(#arrow)" d="M870 660 L980 660"/>
+        <text class="label" x="898" y="646">NÃO</text>
+
+        <!-- retorno da complementação para triagem -->
+        <path class="line" marker-end="url(#arrow)" d="M1150 692 L1150 730 L730 730 L730 534"/>
+        <text class="label" x="1035" y="720">RETORNO À TRIAGEM</text>
+
+        <path class="line" marker-end="url(#arrow)" d="M730 1080 L410 1080 L410 982"/>
+        <text class="label" x="542" y="1068">NÃO</text>
+        <path class="line" marker-end="url(#arrow)" d="M240 1014 L240 1042"/>
+
+        <path class="line" marker-end="url(#arrow)" d="M870 990 L1010 990"/>
+        <text class="label" x="932" y="978">SIM</text>
+
+        <path class="line" marker-end="url(#arrow)" d="M1150 900 L1150 312"/>
+        <text class="label" x="1166" y="626">SIM</text>
+
+        <path class="line" marker-end="url(#arrow)" d="M1290 990 L1400 990 L1400 210 L1290 210"/>
+        <text class="label" x="1360" y="600">NÃO</text>
+
+        <path class="line" marker-end="url(#arrow)" d="M1150 300 L1150 352"/>
+        <text class="label" x="1166" y="338">SIM</text>
+        <path class="line" marker-end="url(#arrow)" d="M1190 416 L1190 440"/>
+
+        <path class="line" marker-end="url(#arrow)" d="M1190 224 L1190 248"/>
+      </svg>
+    </section>
+  </main>
+</body>
+</html>
